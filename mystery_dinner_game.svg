@@ -1,0 +1,290 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1420"/>
+      <stop offset="100%" stop-color="#0d0a12"/>
+    </linearGradient>
+    <linearGradient id="evidenceGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3a1a1a"/>
+      <stop offset="100%" stop-color="#2a1a1a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1400" height="64" fill="#1e1828"/>
+  <text x="32" y="30" fill="#f3d27a" font-size="20" font-weight="700">🕵️  Mystery Dinner</text>
+  <text x="32" y="50" fill="#8a7d95" font-size="12">Case #4 · The Blackwood Estate · 6 suspects · 1 killer</text>
+
+  <g transform="translate(1060, 14)">
+    <rect width="140" height="36" rx="8" fill="#2a2030"/>
+    <text x="14" y="16" fill="#8a7d95" font-size="10">TIME OF DEATH</text>
+    <text x="14" y="30" fill="#f3d27a" font-size="12" font-weight="600">~21:45 · Study</text>
+  </g>
+  <g transform="translate(1215, 14)">
+    <rect width="155" height="36" rx="8" fill="#2a2030"/>
+    <text x="14" y="16" fill="#8a7d95" font-size="10">VERIFIED FACTS</text>
+    <text x="14" y="30" fill="#3dd68c" font-size="12" font-weight="600">7 · 2 contradictions</text>
+  </g>
+
+  <!-- LEFT SIDEBAR: suspect lineup -->
+  <g transform="translate(16, 80)">
+    <text x="12" y="16" fill="#8a7d95" font-size="11" font-weight="600">SUSPECTS</text>
+
+    <!-- Suspect 1 - Librarian (SELECTED) -->
+    <g transform="translate(0, 26)">
+      <rect width="240" height="68" rx="10" fill="#2e1e3a" stroke="#a78bfa" stroke-width="2"/>
+      <circle cx="30" cy="34" r="18" fill="#4a3560"/>
+      <text x="30" y="40" fill="#e6e0f0" font-size="18" text-anchor="middle">📚</text>
+      <text x="58" y="28" fill="#e6e0f0" font-size="13" font-weight="700">Eleanor Price</text>
+      <text x="58" y="44" fill="#8a7d95" font-size="11">Librarian · colleague</text>
+      <text x="58" y="59" fill="#fbbf24" font-size="10">⚠ alibi under pressure</text>
+    </g>
+
+    <!-- Suspect 2 - Chef -->
+    <g transform="translate(0, 102)">
+      <rect width="240" height="56" rx="10" fill="#221824" stroke="#3a2a42" stroke-width="1"/>
+      <circle cx="30" cy="28" r="16" fill="#3a2a42"/>
+      <text x="30" y="34" fill="#c0b5cc" font-size="16" text-anchor="middle">👨‍🍳</text>
+      <text x="58" y="24" fill="#c0b5cc" font-size="13" font-weight="600">Marco Vasile</text>
+      <text x="58" y="40" fill="#7a6d85" font-size="11">Chef · hired for night</text>
+      <text x="58" y="52" fill="#3dd68c" font-size="10">✓ cleared (kitchen cam)</text>
+    </g>
+
+    <!-- Suspect 3 - Heir -->
+    <g transform="translate(0, 166)">
+      <rect width="240" height="56" rx="10" fill="#221824" stroke="#3a2a42" stroke-width="1"/>
+      <circle cx="30" cy="28" r="16" fill="#3a2a42"/>
+      <text x="30" y="34" fill="#c0b5cc" font-size="16" text-anchor="middle">🎩</text>
+      <text x="58" y="24" fill="#c0b5cc" font-size="13" font-weight="600">Julian Blackwood</text>
+      <text x="58" y="40" fill="#7a6d85" font-size="11">Nephew · sole heir</text>
+      <text x="58" y="52" fill="#f87171" font-size="10">✗ lied about phone call</text>
+    </g>
+
+    <!-- Suspect 4 - Doctor -->
+    <g transform="translate(0, 230)">
+      <rect width="240" height="56" rx="10" fill="#221824" stroke="#3a2a42" stroke-width="1"/>
+      <circle cx="30" cy="28" r="16" fill="#3a2a42"/>
+      <text x="30" y="34" fill="#c0b5cc" font-size="16" text-anchor="middle">🩺</text>
+      <text x="58" y="24" fill="#c0b5cc" font-size="13" font-weight="600">Dr. Iris Chen</text>
+      <text x="58" y="40" fill="#7a6d85" font-size="11">Family physician</text>
+      <text x="58" y="52" fill="#8a7d95" font-size="10">? not yet interviewed</text>
+    </g>
+
+    <!-- Suspect 5 - Gardener -->
+    <g transform="translate(0, 294)">
+      <rect width="240" height="56" rx="10" fill="#221824" stroke="#3a2a42" stroke-width="1"/>
+      <circle cx="30" cy="28" r="16" fill="#3a2a42"/>
+      <text x="30" y="34" fill="#c0b5cc" font-size="16" text-anchor="middle">🌿</text>
+      <text x="58" y="24" fill="#c0b5cc" font-size="13" font-weight="600">Rhea Alder</text>
+      <text x="58" y="40" fill="#7a6d85" font-size="11">Gardener · lives on est.</text>
+      <text x="58" y="52" fill="#8a7d95" font-size="10">? not yet interviewed</text>
+    </g>
+
+    <!-- Suspect 6 - Driver -->
+    <g transform="translate(0, 358)">
+      <rect width="240" height="56" rx="10" fill="#221824" stroke="#3a2a42" stroke-width="1"/>
+      <circle cx="30" cy="28" r="16" fill="#3a2a42"/>
+      <text x="30" y="34" fill="#c0b5cc" font-size="16" text-anchor="middle">🚗</text>
+      <text x="58" y="24" fill="#c0b5cc" font-size="13" font-weight="600">Tomás Reyes</text>
+      <text x="58" y="40" fill="#7a6d85" font-size="11">Driver · 12 years</text>
+      <text x="58" y="52" fill="#fbbf24" font-size="10">⚠ evasive on GPS</text>
+    </g>
+
+    <!-- Accuse button -->
+    <g transform="translate(0, 438)">
+      <rect width="240" height="44" rx="10" fill="#7a1a1a" stroke="#ef4444" stroke-width="1"/>
+      <text x="120" y="28" fill="#fca5a5" font-size="13" font-weight="700" text-anchor="middle">⚖  Accuse the killer</text>
+    </g>
+    <text x="120" y="498" fill="#7a6d85" font-size="10" text-anchor="middle">(only one chance — be sure)</text>
+  </g>
+
+  <!-- CENTER: interrogation panel -->
+  <g transform="translate(272, 80)">
+    <!-- Panel bg -->
+    <rect width="780" height="600" rx="14" fill="#1a1420" stroke="#3a2a42" stroke-width="1"/>
+
+    <!-- Suspect header banner -->
+    <rect x="0" y="0" width="780" height="72" rx="14" fill="#2e1e3a"/>
+    <rect x="0" y="58" width="780" height="14" fill="#2e1e3a"/>
+    <circle cx="44" cy="36" r="24" fill="#4a3560"/>
+    <text x="44" y="44" fill="#e6e0f0" font-size="22" text-anchor="middle">📚</text>
+    <text x="80" y="30" fill="#f3d27a" font-size="16" font-weight="700">Interrogating: Eleanor Price</text>
+    <text x="80" y="50" fill="#8a7d95" font-size="11">Public alibi: "Home all evening, reading." · Turn 4 of interview</text>
+
+    <!-- Chat transcript area -->
+    <!-- Detective msg 1 -->
+    <g transform="translate(24, 92)">
+      <rect x="100" width="380" height="36" rx="10" fill="#1e2a3a"/>
+      <text x="114" y="22" fill="#93c5fd" font-size="12">Where were you at 10pm, Eleanor?</text>
+      <text x="480" y="22" fill="#7a6d85" font-size="10" text-anchor="end">YOU</text>
+    </g>
+
+    <!-- Suspect reply (lie) -->
+    <g transform="translate(24, 136)">
+      <rect width="460" height="36" rx="10" fill="#2a1e32"/>
+      <text x="14" y="22" fill="#d0c5dc" font-size="12">At home, reading. Same as any Thursday.</text>
+      <text x="450" y="22" fill="#7a6d85" font-size="10" text-anchor="end">ELEANOR</text>
+    </g>
+    <text x="40" y="188" fill="#7a6d85" font-size="10" font-style="italic">↑ vague question — she evaded. No evidence forced.</text>
+
+    <!-- Detective msg 2 — the sharp question -->
+    <g transform="translate(24, 204)">
+      <rect x="40" width="440" height="52" rx="10" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1"/>
+      <text x="54" y="24" fill="#c4d8ff" font-size="12">Pull up your smart-lock log and read me every</text>
+      <text x="54" y="40" fill="#c4d8ff" font-size="12">front-door event from 7pm to midnight.</text>
+      <text x="470" y="24" fill="#93c5fd" font-size="10" text-anchor="end">YOU</text>
+    </g>
+
+    <!-- Evidence forced banner -->
+    <g transform="translate(24, 272)">
+      <rect width="732" height="24" rx="6" fill="url(#evidenceGrad)" stroke="#ef4444" stroke-width="1"/>
+      <text x="14" y="16" fill="#fca5a5" font-size="11" font-weight="700">📎 EVIDENCE FORCED · question is specific + names a data source → must comply</text>
+    </g>
+
+    <!-- Tool call streaming -->
+    <g transform="translate(24, 304)">
+      <rect width="732" height="124" rx="10" fill="#0a0710" stroke="#3a2a42" stroke-width="1"/>
+      <rect x="0" y="0" width="732" height="24" rx="10" fill="#1a1420"/>
+      <rect x="0" y="14" width="732" height="10" fill="#1a1420"/>
+      <circle cx="14" cy="12" r="4" fill="#3dd68c">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+      </circle>
+      <text x="28" y="16" fill="#3dd68c" font-size="10" font-weight="700">▶ code_exec · Eleanor's device</text>
+      <text x="720" y="16" fill="#7a6d85" font-size="10" text-anchor="end">0.2s</text>
+
+      <text x="16" y="48" fill="#7dd3fc" font-size="11" font-family="monospace">&gt;&gt;&gt; for t, device, action in smart_home:</text>
+      <text x="16" y="64" fill="#7dd3fc" font-size="11" font-family="monospace">...     if device == "front_door" and "19:00" &lt;= t &lt;= "23:59":</text>
+      <text x="16" y="80" fill="#7dd3fc" font-size="11" font-family="monospace">...         print(t, action)</text>
+      <text x="16" y="102" fill="#fbbf24" font-size="11" font-family="monospace">21:35 unlocked   21:36 locked   22:21 unlocked   22:22 locked</text>
+    </g>
+
+    <!-- Suspect reply after forced truth -->
+    <g transform="translate(24, 440)">
+      <rect width="600" height="72" rx="10" fill="#2a1e32"/>
+      <text x="14" y="22" fill="#d0c5dc" font-size="12">Fine. Yes — I stepped out briefly around 9:35. It was</text>
+      <text x="14" y="38" fill="#d0c5dc" font-size="12">the dog walker, he has my code. He comes every evening.</text>
+      <text x="14" y="54" fill="#d0c5dc" font-size="12">I was on the couch the whole time.</text>
+      <text x="590" y="22" fill="#7a6d85" font-size="10" text-anchor="end">ELEANOR</text>
+    </g>
+    <text x="40" y="530" fill="#fbbf24" font-size="11">⚠ truthful data, but her interpretation contradicts Dr. Chen's log. Cross-check?</text>
+
+    <!-- Input -->
+    <g transform="translate(24, 548)">
+      <rect width="732" height="38" rx="10" fill="#0a0710" stroke="#3a2a42" stroke-width="1"/>
+      <text x="16" y="24" fill="#6a5d75" font-size="12" font-style="italic">Ask a sharper question…  (tip: name the data source)</text>
+      <g transform="translate(620, 6)">
+        <rect width="100" height="26" rx="8" fill="#a78bfa"/>
+        <text x="50" y="18" fill="#1a1420" font-size="12" font-weight="700" text-anchor="middle">Press →</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- RIGHT SIDEBAR: detective's notebook -->
+  <g transform="translate(1068, 80)">
+    <rect width="316" height="600" rx="14" fill="#1a1420" stroke="#3a2a42" stroke-width="1"/>
+    <rect x="0" y="0" width="316" height="40" rx="14" fill="#2a2030"/>
+    <rect x="0" y="26" width="316" height="14" fill="#2a2030"/>
+    <text x="16" y="26" fill="#f3d27a" font-size="13" font-weight="700">🗒  Detective's Notebook</text>
+
+    <text x="16" y="64" fill="#8a7d95" font-size="10" font-weight="600">VERIFIED FACTS</text>
+
+    <!-- Fact 1 -->
+    <g transform="translate(16, 74)">
+      <rect width="284" height="42" rx="8" fill="#1a2a1a" stroke="#65a30d" stroke-width="1"/>
+      <text x="12" y="18" fill="#bef264" font-size="10" font-weight="700">✓ Eleanor · smart-lock</text>
+      <text x="12" y="32" fill="#d8e5c0" font-size="10">Door unlocked 21:35 & 22:21</text>
+    </g>
+
+    <!-- Fact 2 -->
+    <g transform="translate(16, 124)">
+      <rect width="284" height="42" rx="8" fill="#1a2a1a" stroke="#65a30d" stroke-width="1"/>
+      <text x="12" y="18" fill="#bef264" font-size="10" font-weight="700">✓ Julian · phone log</text>
+      <text x="12" y="32" fill="#d8e5c0" font-size="10">No calls 21:00–22:00 (he claimed one)</text>
+    </g>
+
+    <!-- Fact 3 -->
+    <g transform="translate(16, 174)">
+      <rect width="284" height="42" rx="8" fill="#1a2a1a" stroke="#65a30d" stroke-width="1"/>
+      <text x="12" y="18" fill="#bef264" font-size="10" font-weight="700">✓ Marco · kitchen cam</text>
+      <text x="12" y="32" fill="#d8e5c0" font-size="10">Continuous presence 20:00–23:00</text>
+    </g>
+
+    <!-- Fact 4 -->
+    <g transform="translate(16, 224)">
+      <rect width="284" height="42" rx="8" fill="#1a2a1a" stroke="#65a30d" stroke-width="1"/>
+      <text x="12" y="18" fill="#bef264" font-size="10" font-weight="700">✓ Tomás · car GPS</text>
+      <text x="12" y="32" fill="#d8e5c0" font-size="10">Arrived estate 21:42, left 22:14</text>
+    </g>
+
+    <!-- Contradictions -->
+    <text x="16" y="298" fill="#8a7d95" font-size="10" font-weight="600">CONTRADICTIONS</text>
+
+    <g transform="translate(16, 308)">
+      <rect width="284" height="60" rx="8" fill="#2a1a1a" stroke="#ef4444" stroke-width="1"/>
+      <text x="12" y="18" fill="#fca5a5" font-size="10" font-weight="700">⚡ Julian vs his phone log</text>
+      <text x="12" y="34" fill="#e8c8c8" font-size="10">Claimed a call w/ lawyer at 21:30.</text>
+      <text x="12" y="48" fill="#e8c8c8" font-size="10">No outgoing call exists.</text>
+    </g>
+
+    <g transform="translate(16, 376)">
+      <rect width="284" height="60" rx="8" fill="#2a1a1a" stroke="#ef4444" stroke-width="1"/>
+      <text x="12" y="18" fill="#fca5a5" font-size="10" font-weight="700">⚡ Eleanor's "dog walker"</text>
+      <text x="12" y="34" fill="#e8c8c8" font-size="10">No dog walker on household</text>
+      <text x="12" y="48" fill="#e8c8c8" font-size="10">roster (per Dr. Chen — family MD)</text>
+    </g>
+
+    <!-- Pending threads -->
+    <text x="16" y="460" fill="#8a7d95" font-size="10" font-weight="600">LEADS TO PURSUE</text>
+
+    <g transform="translate(16, 470)">
+      <rect width="284" height="32" rx="6" fill="#2a2030"/>
+      <text x="12" y="20" fill="#c0b5cc" font-size="11">→ Eleanor's GPS at 21:40</text>
+    </g>
+
+    <g transform="translate(16, 510)">
+      <rect width="284" height="32" rx="6" fill="#2a2030"/>
+      <text x="12" y="20" fill="#c0b5cc" font-size="11">→ Julian's car GPS to cross-check</text>
+    </g>
+
+    <g transform="translate(16, 550)">
+      <rect width="284" height="32" rx="6" fill="#2a2030"/>
+      <text x="12" y="20" fill="#c0b5cc" font-size="11">→ Dr. Chen's first interview</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM: question tips / suggestions -->
+  <g transform="translate(16, 704)">
+    <text x="0" y="0" fill="#8a7d95" font-size="11" font-weight="600">QUESTION LADDER — how sharp is your question?</text>
+
+    <g transform="translate(0, 14)">
+      <rect width="440" height="60" rx="10" fill="#1a1420" stroke="#3a2a42" stroke-width="1"/>
+      <text x="16" y="22" fill="#7a6d85" font-size="11" font-weight="700">🌫  VAGUE · safe to lie</text>
+      <text x="16" y="40" fill="#6a5d75" font-size="11" font-style="italic">"What were you doing that night?"</text>
+      <text x="16" y="54" fill="#6a5d75" font-size="10">→ suspect will evade or fabricate</text>
+    </g>
+
+    <g transform="translate(452, 14)">
+      <rect width="440" height="60" rx="10" fill="#2a2414" stroke="#a8850a" stroke-width="1"/>
+      <text x="16" y="22" fill="#fbbf24" font-size="11" font-weight="700">🎯  SPECIFIC · risky lie</text>
+      <text x="16" y="40" fill="#f3d27a" font-size="11" font-style="italic">"What time did you get home?"</text>
+      <text x="16" y="54" fill="#d8c090" font-size="10">→ may lie, but you can cross-check</text>
+    </g>
+
+    <g transform="translate(904, 14)">
+      <rect width="468" height="60" rx="10" fill="#1a2a1a" stroke="#3dd68c" stroke-width="1"/>
+      <text x="16" y="22" fill="#3dd68c" font-size="11" font-weight="700">⚡  INVOKED · forced truth</text>
+      <text x="16" y="40" fill="#bef264" font-size="11" font-style="italic">"Pull up your smart-lock log between 7pm and midnight."</text>
+      <text x="16" y="54" fill="#9ac570" font-size="10">→ code_exec fires, raw record returned</text>
+    </g>
+  </g>
+
+  <!-- Footer hint -->
+  <text x="700" y="860" fill="#6a5d75" font-size="11" text-anchor="middle" font-style="italic">Cross-reference what one suspect's forced-truth reveals with another's story. Lies collapse when evidence stacks.</text>
+</svg>

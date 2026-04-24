@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mystery Dinner — Slice 5 · Full Game</title>
+  <link rel="stylesheet" href="/mystery_dinner.css" />
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <div class="topbar-row">
+      <h1>🕵️ Mystery Dinner <span class="slice">Slice 5 · The Blackwood Estate</span></h1>
+      <div class="topbar-right">
+        <div class="clock" id="clock">⏱ 10:00</div>
+      </div>
+    </div>
+    <div class="case-info" id="case-info">Loading case…</div>
+  </header>
+
+  <main class="stage stage-three">
+    <!-- LEFT: Suspect lineup -->
+    <aside class="lineup" id="lineup">
+      <h3>Lineup</h3>
+      <ol id="suspects" class="suspects-list">
+        <li class="muted">Loading suspects…</li>
+      </ol>
+    </aside>
+
+    <!-- CENTER: Detective panel -->
+    <section class="suspect-card detective-card">
+      <div class="suspect-header">
+        <div class="avatar avatar-gold">🕵️</div>
+        <div class="meta">
+          <div class="name">The Detective</div>
+          <div class="role">list_suspects · ask_suspect · list_verified_facts · accuse</div>
+        </div>
+      </div>
+
+      <div class="stream" id="stream" aria-live="polite"></div>
+
+      <form class="composer" id="composer">
+        <input
+          id="question"
+          type="text"
+          name="question"
+          autocomplete="off"
+          placeholder="Direct the detective (e.g. 'investigate the whole house, find the killer')…"
+          required
+        />
+        <button type="submit" id="send">Send →</button>
+      </form>
+
+      <!-- Commentary feed -->
+      <section class="commentary-feed" id="commentary">
+        <header class="commentary-header">
+          <img class="commentary-avatar" src="/images/avatar_commentator.png" alt="Commentator" />
+          <div>
+            <div class="commentary-title">Live Commentary</div>
+            <div class="commentary-sub">One-line reactions as evidence lands</div>
+          </div>
+        </header>
+        <ol class="commentary-list" id="commentary-list">
+          <li class="muted">Awaiting first forced-truth…</li>
+        </ol>
+      </section>
+    </section>
+
+    <!-- RIGHT: Notebook -->
+    <aside class="notebook">
+      <h3>🗒 Notebook</h3>
+
+      <section class="notebook-section">
+        <h4>Verified facts</h4>
+        <ol id="facts" class="facts-list">
+          <li class="muted">Nothing verified yet.</li>
+        </ol>
+      </section>
+
+      <section class="notebook-section">
+        <h4>Interrogation log</h4>
+        <ol id="turns" class="turns-list">
+          <li class="muted">No turns yet.</li>
+        </ol>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="/mystery_dinner.js"></script>
+</body>
+</html>

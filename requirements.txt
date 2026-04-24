@@ -1,0 +1,6 @@
+starlette
+uvicorn
+google-genai
+google-auth
+fast-depends
+autogen @ git+https://github.com/ag2ai/ag2.git@main
