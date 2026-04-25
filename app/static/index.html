@@ -7,85 +7,120 @@
   <link rel="stylesheet" href="/mystery_dinner.css" />
   <link rel="icon" type="image/png" href="/images/favicon.png" />
 </head>
-<body>
-  <header class="topbar" id="topbar">
-    <div class="topbar-row">
-      <h1>🕵️ Mystery Dinner <span class="slice">Slice 5 · The Blackwood Estate</span></h1>
-      <div class="topbar-right">
-        <button type="button" id="new-game" class="new-game-btn">↻ New game</button>
-        <div class="clock" id="clock">⏱ 10:00</div>
-      </div>
+<body data-view="splash">
+  <!-- Splash / home view -->
+  <section class="splash" id="splash">
+    <div class="splash-slideshow" aria-hidden="true">
+      <div class="splash-bg" style="background-image:url('/images/loc_estate.png')"></div>
+      <div class="splash-bg" style="background-image:url('/images/loc_country_manor.png')"></div>
+      <div class="splash-bg" style="background-image:url('/images/loc_penthouse.png')"></div>
+      <div class="splash-bg" style="background-image:url('/images/loc_ski_chalet.png')"></div>
+      <div class="splash-bg" style="background-image:url('/images/loc_yacht.png')"></div>
+      <div class="splash-bg" style="background-image:url('/images/map_background.png')"></div>
     </div>
-    <div class="case-info" id="case-info">Loading case…</div>
-  </header>
+    <div class="splash-vignette" aria-hidden="true"></div>
 
-  <main class="stage stage-three">
-    <!-- LEFT: Suspect lineup -->
-    <aside class="lineup" id="lineup">
-      <h3>Lineup</h3>
-      <ol id="suspects" class="suspects-list">
-        <li class="muted">Loading suspects…</li>
-      </ol>
-    </aside>
+    <div class="splash-content">
+      <img class="splash-logo" src="/images/ag2_white.svg" alt="AG2" />
+      <h1 class="splash-title">Mystery Dinner</h1>
+      <p class="splash-tagline">Six suspects. Ten minutes. One killer.</p>
 
-    <!-- CENTER: Detective panel -->
-    <section class="suspect-card detective-card">
-      <div class="suspect-header">
-        <div class="avatar avatar-gold">🕵️</div>
-        <div class="meta">
-          <div class="name">The Detective</div>
-          <div class="role">list_suspects · ask_suspect · list_verified_facts · accuse</div>
+      <div class="splash-grid">
+        <button type="button" class="directive-card" data-directive="Investigate the whole house and find the killer. Question every suspect.">
+          <div class="directive-title">Full Sweep</div>
+          <div class="directive-sub">Question every suspect. Surface the contradictions.</div>
+        </button>
+        <button type="button" class="directive-card" data-directive="Start with Julian Blackwood. He inherits everything — push him on his patio alibi and his keycard log.">
+          <div class="directive-title">Follow the Heir</div>
+          <div class="directive-sub">Julian gains the most from this death. Lean on him first.</div>
+        </button>
+        <button type="button" class="directive-card" data-directive="Pull every available data source for the murder window 21:30–22:00. Let the records do the talking, then accuse.">
+          <div class="directive-title">Trust the Records</div>
+          <div class="directive-sub">GPS, keycard, phone logs, smart-home. Force the truth.</div>
+        </button>
+        <button type="button" class="directive-card" data-directive="Question the staff first — chef Marco, gardener Rhea, and driver Tomás — then check their alibis against the family's.">
+          <div class="directive-title">Question the Staff</div>
+          <div class="directive-sub">Chef, gardener, driver. Cross-check before pressing the family.</div>
+        </button>
+      </div>
+
+      <p class="splash-foot">Click a directive to begin. The clock starts on the first tool call.</p>
+    </div>
+  </section>
+
+  <!-- Game view -->
+  <div class="game-view" id="game-view">
+    <header class="topbar" id="topbar">
+      <div class="topbar-row">
+        <h1>
+          <img class="topbar-logo" src="/images/ag2_white.svg" alt="AG2" />
+          <span class="topbar-title">🕵️ Mystery Dinner</span>
+          <span class="slice">Slice 5 · The Blackwood Estate</span>
+        </h1>
+        <div class="topbar-right">
+          <button type="button" id="new-game" class="new-game-btn">↻ New game</button>
+          <div class="clock" id="clock">⏱ 10:00</div>
         </div>
       </div>
+      <div class="case-info" id="case-info">Loading case…</div>
+    </header>
 
-      <div class="stream" id="stream" aria-live="polite"></div>
+    <main class="stage stage-three">
+      <!-- LEFT: Suspect lineup -->
+      <aside class="lineup" id="lineup">
+        <h3>Lineup</h3>
+        <ol id="suspects" class="suspects-list">
+          <li class="muted">Loading suspects…</li>
+        </ol>
+      </aside>
 
-      <form class="composer" id="composer">
-        <input
-          id="question"
-          type="text"
-          name="question"
-          autocomplete="off"
-          placeholder="Direct the detective (e.g. 'investigate the whole house, find the killer')…"
-          required
-        />
-        <button type="submit" id="send">Send →</button>
-      </form>
-
-      <!-- Commentary feed -->
-      <section class="commentary-feed" id="commentary">
-        <header class="commentary-header">
-          <img class="commentary-avatar" src="/images/avatar_commentator.png" alt="Commentator" />
-          <div>
-            <div class="commentary-title">Live Commentary</div>
-            <div class="commentary-sub">One-line reactions as evidence lands</div>
+      <!-- CENTER: Detective panel -->
+      <section class="suspect-card detective-card">
+        <div class="suspect-header">
+          <div class="avatar avatar-gold">🕵️</div>
+          <div class="meta">
+            <div class="name">The Detective</div>
+            <div class="role">list_suspects · ask_suspect · list_verified_facts · accuse</div>
           </div>
-        </header>
-        <ol class="commentary-list" id="commentary-list">
-          <li class="muted">Awaiting first forced-truth…</li>
-        </ol>
-      </section>
-    </section>
+        </div>
 
-    <!-- RIGHT: Notebook -->
-    <aside class="notebook">
-      <h3>🗒 Notebook</h3>
+        <div class="stream" id="stream" aria-live="polite"></div>
 
-      <section class="notebook-section">
-        <h4>Verified facts</h4>
-        <ol id="facts" class="facts-list">
-          <li class="muted">Nothing verified yet.</li>
-        </ol>
+        <!-- Commentary feed -->
+        <section class="commentary-feed" id="commentary">
+          <header class="commentary-header">
+            <img class="commentary-avatar" src="/images/avatar_commentator.png" alt="Commentator" />
+            <div>
+              <div class="commentary-title">Live Commentary</div>
+              <div class="commentary-sub">One-line reactions as evidence lands</div>
+            </div>
+          </header>
+          <ol class="commentary-list" id="commentary-list">
+            <li class="muted">Awaiting first forced-truth…</li>
+          </ol>
+        </section>
       </section>
 
-      <section class="notebook-section">
-        <h4>Interrogation log</h4>
-        <ol id="turns" class="turns-list">
-          <li class="muted">No turns yet.</li>
-        </ol>
-      </section>
-    </aside>
-  </main>
+      <!-- RIGHT: Notebook -->
+      <aside class="notebook">
+        <h3>🗒 Notebook</h3>
+
+        <section class="notebook-section">
+          <h4>Verified facts</h4>
+          <ol id="facts" class="facts-list">
+            <li class="muted">Nothing verified yet.</li>
+          </ol>
+        </section>
+
+        <section class="notebook-section">
+          <h4>Interrogation log</h4>
+          <ol id="turns" class="turns-list">
+            <li class="muted">No turns yet.</li>
+          </ol>
+        </section>
+      </aside>
+    </main>
+  </div>
 
   <script type="module" src="/mystery_dinner.js"></script>
 </body>

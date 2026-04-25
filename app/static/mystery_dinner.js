@@ -1,9 +1,8 @@
 // Slice 3 client: 6-suspect lineup, detective driven by user directives.
 
 const streamEl = document.getElementById("stream");
-const form = document.getElementById("composer");
-const input = document.getElementById("question");
-const send = document.getElementById("send");
+const splashEl = document.getElementById("splash");
+const directiveCards = document.querySelectorAll(".directive-card");
 const caseInfoEl = document.getElementById("case-info");
 const suspectsEl = document.getElementById("suspects");
 const factsEl = document.getElementById("facts");
@@ -12,8 +11,13 @@ const commentaryListEl = document.getElementById("commentary-list");
 const clockEl = document.getElementById("clock");
 const topbarEl = document.getElementById("topbar");
 
-const threadId = crypto.randomUUID();
-const messages = [];
+let threadId = crypto.randomUUID();
+let messages = [];
+let activeRunController = null;
+
+function showView(name) {
+  document.body.dataset.view = name;
+}
 
 // ---------- Case + suspects bootstrap ----------
 async function loadCase() {
@@ -70,12 +74,23 @@ async function loadSuspects() {
 
 // ---------- Detective runner ----------
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const text = input.value.trim();
+async function submitDirective(text) {
   if (!text) return;
-  input.value = "";
-  send.disabled = true;
+  setDirectivesDisabled(true);
+
+  // The splash is the new-game entry point — start every directive on a
+  // fresh server-side clock + empty memory.
+  try {
+    await fetch("/reset", { method: "POST" });
+  } catch (e) {
+    console.warn("reset failed before directive run:", e);
+  }
+  messages = [];
+  threadId = crypto.randomUUID();
+  streamEl.innerHTML = "";
+  commentaryListEl.innerHTML = '<li class="muted">Awaiting first forced-truth…</li>';
+
+  showView("game");
 
   appendTurn("user", text);
   messages.push({ id: crypto.randomUUID(), role: "user", content: text });
@@ -83,13 +98,24 @@ form.addEventListener("submit", async (e) => {
   try {
     await runTurn();
   } catch (err) {
+    if (err.name === "AbortError") return;
     console.error(err);
     appendSystem(`Error: ${err.message}`);
   } finally {
-    send.disabled = false;
-    input.focus();
+    setDirectivesDisabled(false);
   }
-});
+}
+
+function setDirectivesDisabled(disabled) {
+  for (const c of directiveCards) c.disabled = disabled;
+}
+
+for (const card of directiveCards) {
+  card.addEventListener("click", () => {
+    const directive = card.dataset.directive || "";
+    submitDirective(directive);
+  });
+}
 
 async function runTurn() {
   const runId = crypto.randomUUID();
@@ -103,10 +129,12 @@ async function runTurn() {
     forwardedProps: {},
   };
 
+  activeRunController = new AbortController();
   const response = await fetch("/agent/detective", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
     body: JSON.stringify(body),
+    signal: activeRunController.signal,
   });
 
   if (!response.ok) {
@@ -535,13 +563,25 @@ if (newGameBtn) {
     if (!confirm("Start a new game? Current facts and turns will be cleared.")) return;
     newGameBtn.disabled = true;
     try {
+      if (activeRunController) {
+        try { activeRunController.abort(); } catch {}
+        activeRunController = null;
+      }
       const r = await fetch("/reset", { method: "POST" });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      window.location.reload();
+      // Reset client-side state
+      messages = [];
+      threadId = crypto.randomUUID();
+      streamEl.innerHTML = "";
+      // Notebook lists clear via the SSE snapshot we pushed from /reset.
+      // Commentary stream doesn't have a reset event, so clear it locally.
+      commentaryListEl.innerHTML = '<li class="muted">Awaiting first forced-truth…</li>';
+      showView("splash");
     } catch (e) {
       console.error(e);
-      newGameBtn.disabled = false;
       alert(`Reset failed: ${e.message}`);
+    } finally {
+      newGameBtn.disabled = false;
     }
   });
 }
