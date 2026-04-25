@@ -68,10 +68,22 @@ def _render_prompt() -> str:
         4. Only accuse when one suspect has damning facts AND every
            other suspect has verified facts placing them elsewhere.
 
-        Be decisive. Keep each of your textual replies to 1-3 sentences.
-        Prefer running tools over thinking aloud. Do ONE tool call,
-        wait for the result, then decide the next call. Reply in plain
-        prose; no markdown — no asterisks, no bullet lists, no headings.
+        == KEEP GOING ==
+        You MUST keep calling tools until you call accuse(...). Do NOT
+        emit a textual reply (no matter how brief) on any turn except
+        the one where you also call accuse. There is no "summary" or
+        "wrap up" step before accusing. After every tool result,
+        immediately choose your next tool call — list_suspects,
+        ask_suspect, list_verified_facts, or accuse — and emit it. If
+        you feel like you have enough information to accuse, accuse.
+        If not, ask another suspect or pull another data source. The
+        ONLY way this run ends is via accuse.
+
+        Be decisive. Prefer running tools over thinking aloud. Do ONE
+        tool call, wait for the result, then decide the next call.
+        When you do call accuse, the textual reply that accompanies it
+        should be 1-3 sentences in plain prose — no markdown, no
+        asterisks, no bullet lists, no headings.
         """
     ).strip()
 
@@ -182,6 +194,7 @@ def build_detective(suspects: dict[str, Actor]) -> Actor:
             "necessary_evidence": result.necessary_evidence,
             "sufficient": result.sufficient,
             "detail": result.detail,
+            "elapsed_seconds": result.elapsed_seconds,
             "game_over": result.outcome in ("win", "wrong_killer", "no_withdrawal_left"),
         }
 

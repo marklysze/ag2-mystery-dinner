@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from .cases.blackwood_estate import KILLER, MURDER_LOCATION, MURDER_WINDOW, profile_by_name
+from .clock import GAME_CLOCK
 from .memory import CASE_MEMORY, VerifiedFact
 
 
@@ -14,6 +15,7 @@ class AccusationResult:
     necessary_evidence: list[dict]
     sufficient: bool
     detail: str
+    elapsed_seconds: int = 0
 
 
 class GameMaster:
@@ -47,6 +49,7 @@ class GameMaster:
                 necessary_evidence=[],
                 sufficient=False,
                 detail="Game already concluded.",
+                elapsed_seconds=GAME_CLOCK.elapsed(),
             )
 
         # Collect evidence that could implicate the accused
@@ -76,12 +79,14 @@ class GameMaster:
                 necessary_evidence=[_fact_dict(f) for f in necessary],
                 sufficient=sufficient,
                 detail=f"No suspect named {accused}.",
+                elapsed_seconds=GAME_CLOCK.elapsed(),
             )
 
         # Wrong person → immediate loss (regardless of evidence)
         if accused_key != self.killer:
             self._terminated = True
             self._winning_outcome = False
+            GAME_CLOCK.freeze()
             return AccusationResult(
                 outcome="wrong_killer",
                 killer_true=self.killer,
@@ -94,6 +99,7 @@ class GameMaster:
                     f"The killer was {profile_by_name(self.killer).display_name}. "
                     "The real killer has escaped."
                 ),
+                elapsed_seconds=GAME_CLOCK.elapsed(),
             )
 
         # Right person — but do we have enough?
@@ -128,6 +134,7 @@ class GameMaster:
         # Win
         self._terminated = True
         self._winning_outcome = True
+        GAME_CLOCK.freeze()
         return AccusationResult(
             outcome="win",
             killer_true=self.killer,
@@ -139,6 +146,7 @@ class GameMaster:
                 f"Case closed. {accused_profile.display_name} is the killer, "
                 "and your verified evidence implicates them beyond doubt."
             ),
+            elapsed_seconds=GAME_CLOCK.elapsed(),
         )
 
     def _maybe_withdraw(
@@ -160,10 +168,12 @@ class GameMaster:
                 necessary_evidence=[_fact_dict(f) for f in necessary],
                 sufficient=sufficient,
                 detail=f"{detail}  (Withdrawals remaining: {self._withdrawals_left})",
+                elapsed_seconds=GAME_CLOCK.elapsed(),
             )
         # Out of withdrawals → terminal loss
         self._terminated = True
         self._winning_outcome = False
+        GAME_CLOCK.freeze()
         return AccusationResult(
             outcome="no_withdrawal_left",
             killer_true=self.killer,
@@ -172,6 +182,7 @@ class GameMaster:
             necessary_evidence=[_fact_dict(f) for f in necessary],
             sufficient=sufficient,
             detail=f"{detail}  No withdrawals remaining. The case is closed as unsolved.",
+            elapsed_seconds=GAME_CLOCK.elapsed(),
         )
 
 

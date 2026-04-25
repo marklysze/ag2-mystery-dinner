@@ -727,6 +727,17 @@ body[data-view="splash"] .game-view { display: none; }
   letter-spacing: 0.1em;
 }
 
+.verdict-time {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 16px;
+  margin: 6px 0 10px;
+  letter-spacing: 0.06em;
+}
+.verdict-time b {
+  font-size: 22px;
+  font-weight: 700;
+}
+
 /* ---------- Portraits in lineup ---------- */
 
 .suspect-item .portrait {

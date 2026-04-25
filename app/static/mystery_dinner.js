@@ -429,16 +429,26 @@ function renderVerdict(raw) {
       : data.outcome === "insufficient_evidence" ? "warn"
       : "loss";
     el.className = `verdict ${kind}`;
+    const elapsedHTML =
+      data.game_over && Number.isFinite(data.elapsed_seconds)
+        ? `<div class="verdict-time">Solved in <b>${fmtElapsed(data.elapsed_seconds)}</b></div>`
+        : "";
     el.innerHTML = `
-      <h4>${data.outcome.replace("_", " ")}</h4>
-      <div>${data.detail ?? ""}</div>
+      <h4>${escapeHtml(String(data.outcome).replace(/_/g, " "))}</h4>
+      ${elapsedHTML}
+      <div>${escapeHtml(data.detail ?? "")}</div>
     `;
     streamEl.appendChild(el);
     scrollStream();
-    if (data.game_over) send.disabled = true;
   } catch (e) {
     console.warn("verdict parse failed", e);
   }
+}
+
+function fmtElapsed(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 function scrollStream() { streamEl.scrollTop = streamEl.scrollHeight; }
