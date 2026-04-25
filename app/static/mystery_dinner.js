@@ -169,9 +169,8 @@ function handleRecord(record, asst, toolCalls) {
     case "TOOL_CALL_START": {
       const id = payload.toolCallId;
       const name = payload.toolCallName || "tool";
-      const header = appendToolHeader(name);
-      const code = appendCodeBlock(name);
-      toolCalls.set(id, { header, code, name, args: "", result: "" });
+      const card = appendToolCard(name);
+      toolCalls.set(id, { card, name, args: "", result: "" });
       break;
     }
     case "TOOL_CALL_ARGS":
@@ -181,7 +180,7 @@ function handleRecord(record, asst, toolCalls) {
       if (!entry) break;
       const delta = payload.delta ?? payload.args ?? "";
       entry.args += delta;
-      entry.code.querySelector(".args").textContent = entry.args;
+      renderToolArgs(entry);
       scrollStream();
       break;
     }
@@ -190,10 +189,8 @@ function handleRecord(record, asst, toolCalls) {
       const entry = toolCalls.get(id);
       if (!entry) break;
       const r = payload.content ?? payload.result ?? "";
-      entry.result = r;
-      const el = entry.code.querySelector(".result");
-      el.textContent = `→ ${truncate(String(r), 400)}`;
-      el.style.display = "block";
+      entry.result = String(r);
+      renderToolResult(entry);
       scrollStream();
       if (entry.name === "accuse") renderVerdict(r);
       break;
@@ -213,37 +210,168 @@ function appendTurn(role, text) {
   return el;
 }
 
-function appendToolHeader(name) {
+const TOOL_META = {
+  list_suspects:        { icon: "👥", label: "Lineup query" },
+  ask_suspect:          { icon: "🎙", label: "Interrogation" },
+  list_verified_facts:  { icon: "📓", label: "Notebook check" },
+  accuse:               { icon: "⚖", label: "Final accusation" },
+  _default:             { icon: "▶",  label: "Tool call" },
+};
+
+function appendToolCard(name) {
+  const meta = TOOL_META[name] || TOOL_META._default;
   const el = document.createElement("div");
-  el.className = "tool-header";
-  if (name === "ask_suspect") el.classList.add("evidence");
-  if (name === "accuse") el.classList.add("accuse");
-  el.textContent =
-    name === "ask_suspect" ? `📎 ${name} — interrogating suspect`
-    : name === "accuse" ? `⚖ ${name} — FINAL CALL`
-    : `▶ ${name}`;
+  el.className = "tool-card";
+  el.dataset.tool = name;
+  el.innerHTML = `
+    <div class="tool-card-header">
+      <span class="tool-icon"></span>
+      <span class="tool-name"></span>
+      <span class="tool-tag"></span>
+    </div>
+    <div class="tool-card-args"></div>
+    <div class="tool-card-result" hidden></div>
+  `;
+  el.querySelector(".tool-icon").textContent = meta.icon;
+  el.querySelector(".tool-name").textContent = meta.label;
+  el.querySelector(".tool-tag").textContent = name;
   streamEl.appendChild(el);
   scrollStream();
   return el;
 }
 
-function appendCodeBlock(name) {
-  const el = document.createElement("div");
-  el.className = "code-block";
-  const label = document.createElement("span");
-  label.className = "label";
-  label.textContent = name;
-  el.appendChild(label);
-  const args = document.createElement("div");
-  args.className = "args";
-  el.appendChild(args);
-  const result = document.createElement("div");
-  result.className = "result";
-  result.style.display = "none";
-  el.appendChild(result);
-  streamEl.appendChild(el);
-  scrollStream();
-  return el;
+function renderToolArgs(entry) {
+  const el = entry.card.querySelector(".tool-card-args");
+  let parsed = null;
+  try { parsed = JSON.parse(entry.args || "{}"); } catch { /* args still streaming */ }
+
+  if (!parsed) {
+    el.innerHTML = `<div class="args-streaming">${escapeHtml(entry.args)}</div>`;
+    return;
+  }
+
+  if (entry.name === "ask_suspect") {
+    const who = titleCase(parsed.name || "?");
+    el.innerHTML = `
+      <div class="ask-target">${escapeHtml(who)}</div>
+      ${parsed.question ? `<div class="ask-question">${escapeHtml(parsed.question)}</div>` : ""}`;
+  } else if (entry.name === "list_verified_facts") {
+    el.innerHTML = parsed.suspect
+      ? `<div class="dim">filter: ${escapeHtml(parsed.suspect)}</div>`
+      : `<div class="dim">all suspects</div>`;
+  } else if (entry.name === "accuse") {
+    const who = titleCase(parsed.suspect || "?");
+    el.innerHTML = `
+      <div class="ask-target">Accusing ${escapeHtml(who)}</div>
+      ${parsed.reasoning ? `<div class="ask-question">${escapeHtml(parsed.reasoning)}</div>` : ""}`;
+  } else if (entry.name === "list_suspects") {
+    el.innerHTML = ""; // no args of interest
+  } else {
+    el.innerHTML = renderKeyValues(parsed);
+  }
+}
+
+function renderToolResult(entry) {
+  const el = entry.card.querySelector(".tool-card-result");
+  el.hidden = false;
+  let parsed = null;
+  try { parsed = JSON.parse(entry.result); } catch { /* keep as string */ }
+
+  if (entry.name === "ask_suspect") {
+    el.innerHTML = `<div class="suspect-reply">— ${escapeHtml(entry.result)}</div>`;
+    return;
+  }
+
+  if (entry.name === "list_suspects" && Array.isArray(parsed)) {
+    el.innerHTML = parsed.map(s => `
+      <div class="lineup-row">
+        <span class="lineup-name">${escapeHtml(s.display_name || s.name || "?")}</span>
+        <span class="lineup-role">${escapeHtml(s.occupation || "")}</span>
+      </div>`).join("");
+    return;
+  }
+
+  if (entry.name === "list_verified_facts" && Array.isArray(parsed)) {
+    if (parsed.length === 0) {
+      el.innerHTML = `<div class="dim">No facts on record.</div>`;
+      return;
+    }
+    el.innerHTML = parsed.map(f => `
+      <div class="fact-row">
+        <div class="fact-row-head">
+          <span class="fact-suspect">${escapeHtml(f.suspect || "?")}</span>
+          <span class="fact-source">${escapeHtml(f.data_source || "")}</span>
+        </div>
+        <div class="fact-data">${formatFactResult(f.result)}</div>
+      </div>`).join("");
+    return;
+  }
+
+  if (entry.name === "accuse" && parsed) {
+    const outcomeClass =
+      parsed.outcome === "win" ? "win"
+      : parsed.outcome === "insufficient_evidence" ? "warn"
+      : "loss";
+    el.innerHTML = `
+      <div class="accuse-outcome ${outcomeClass}">${escapeHtml((parsed.outcome || "").replace(/_/g, " "))}</div>
+      ${parsed.detail ? `<div class="accuse-detail">${escapeHtml(parsed.detail)}</div>` : ""}`;
+    return;
+  }
+
+  el.textContent = `→ ${truncate(entry.result, 600)}`;
+}
+
+function renderKeyValues(obj) {
+  const entries = Object.entries(obj || {});
+  if (entries.length === 0) return "";
+  return entries.map(([k, v]) => `
+    <div class="kv">
+      <span class="k">${escapeHtml(k)}</span>
+      <span class="v">${escapeHtml(typeof v === "string" ? v : JSON.stringify(v))}</span>
+    </div>`).join("");
+}
+
+function formatFactResult(raw) {
+  let parsed = null;
+  try { parsed = JSON.parse(raw); } catch { /* fall through */ }
+
+  if (Array.isArray(parsed) && parsed.length && Array.isArray(parsed[0])) {
+    return parsed.map(row => `
+      <div class="data-row">${
+        row.map(v => `<span class="cell">${escapeHtml(formatCell(v))}</span>`)
+           .join('<span class="sep">·</span>')
+      }</div>`).join("");
+  }
+  if (Array.isArray(parsed)) {
+    return `<div class="data-row">${
+      parsed.map(v => `<span class="cell">${escapeHtml(formatCell(v))}</span>`)
+            .join('<span class="sep">·</span>')
+    }</div>`;
+  }
+  if (parsed && typeof parsed === "object") {
+    return renderKeyValues(parsed);
+  }
+  return `<div class="data-row"><span class="cell">${escapeHtml(String(parsed ?? raw))}</span></div>`;
+}
+
+function formatCell(v) {
+  if (typeof v === "number") {
+    return Number.isInteger(v) ? String(v) : v.toFixed(4);
+  }
+  return String(v);
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function titleCase(s) {
+  return String(s).replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function appendSystem(text) {
@@ -325,14 +453,9 @@ function renderNotebook() {
     for (const f of state.facts) {
       const li = document.createElement("li");
       li.className = "fact-item";
-      const label = document.createElement("div");
-      label.className = "fact-label";
-      label.textContent = `✓ ${f.label}`;
-      li.appendChild(label);
-      const body = document.createElement("div");
-      body.className = "fact-result";
-      body.textContent = truncate(String(f.result), 240);
-      li.appendChild(body);
+      li.innerHTML = `
+        <div class="fact-label">✓ ${escapeHtml(f.label || "")}</div>
+        <div class="fact-result">${formatFactResult(f.result)}</div>`;
       factsEl.appendChild(li);
     }
   }
