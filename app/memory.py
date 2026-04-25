@@ -47,6 +47,11 @@ class CaseMemory:
         self.verified_facts.append(fact)
         self._notify("fact", fact)
 
+    def reset(self) -> None:
+        self.interrogation_log.clear()
+        self.verified_facts.clear()
+        self._notify("snapshot", {"turns": [], "facts": []})
+
     def subscribe(self, cb) -> None:
         self._listeners.append(cb)
 

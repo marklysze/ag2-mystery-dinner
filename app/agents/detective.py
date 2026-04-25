@@ -70,7 +70,8 @@ def _render_prompt() -> str:
 
         Be decisive. Keep each of your textual replies to 1-3 sentences.
         Prefer running tools over thinking aloud. Do ONE tool call,
-        wait for the result, then decide the next call.
+        wait for the result, then decide the next call. Reply in plain
+        prose; no markdown — no asterisks, no bullet lists, no headings.
         """
     ).strip()
 

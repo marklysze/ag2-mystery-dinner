@@ -52,6 +52,7 @@ def create_app() -> Starlette:
     routes.append(Route("/agent/commentator", AGUIStream(commentator).build_asgi()))
     routes.append(Route("/case", case_info))
     routes.append(Route("/suspects", suspects_info))
+    routes.append(Route("/reset", reset_game, methods=["POST"]))
     routes.append(Route("/notebook/stream", notebook_stream))
     routes.append(Route("/notebook/snapshot", notebook_snapshot))
     routes.append(Route("/commentary/stream", commentary_stream))
@@ -87,6 +88,13 @@ async def case_info(request: Request) -> JSONResponse:
 
 async def suspects_info(request: Request) -> JSONResponse:
     return JSONResponse(format_suspect_summary())
+
+
+async def reset_game(request: Request) -> JSONResponse:
+    GAME_CLOCK.reset(10 * 60)
+    GAME_MASTER.reset()
+    CASE_MEMORY.reset()
+    return JSONResponse({"ok": True, "clock_remaining": GAME_CLOCK.remaining()})
 
 
 async def notebook_snapshot(request: Request) -> StreamingResponse:  # type: ignore[override]

@@ -57,7 +57,9 @@ def _render_prompt(profile: SuspectProfile) -> str:
         == STYLE ==
         Stay in character. Replies 2-4 sentences unless the tool returns
         many rows. Irritable when pressed. Do not break character or
-        hint at being an AI.
+        hint at being an AI. Reply in plain conversational prose. Do
+        NOT use markdown formatting — no asterisks, no bullet lists,
+        no headings, no code blocks.
         """
     ).strip()
 

@@ -29,6 +29,11 @@ class GameMaster:
     def is_terminated(self) -> bool:
         return self._terminated
 
+    def reset(self) -> None:
+        self._withdrawals_left = 1
+        self._terminated = False
+        self._winning_outcome = None
+
     def finalize(self, accused: str, reasoning: str) -> AccusationResult:
         accused_key = accused.lower().strip()
         facts = CASE_MEMORY.verified_facts

@@ -31,7 +31,13 @@ html, body {
   background: linear-gradient(180deg, #1a1420 0%, #0d0a12 100%);
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .topbar {
@@ -63,6 +69,25 @@ html, body {
 
 .clock.warn { color: #fbbf24; border-color: #a8850a; }
 .clock.danger { color: var(--evidence); border-color: var(--evidence); }
+
+.new-game-btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+.new-game-btn:hover {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: var(--accent);
+}
+.new-game-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .topbar-row {
   display: flex;
@@ -107,18 +132,27 @@ html, body {
 
 .stage {
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   display: grid;
   gap: 20px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .stage-three {
   grid-template-columns: 300px 1fr 320px;
+  grid-template-rows: 1fr;
 }
 
+.stage-three > * { min-height: 0; }
+
 @media (max-width: 1100px) {
-  .stage-three { grid-template-columns: 1fr; }
+  html, body { height: auto; overflow: auto; }
+  body { display: block; }
+  .stage-three { grid-template-columns: 1fr; grid-template-rows: auto; overflow: visible; }
+  .stage-three > * { min-height: auto; }
 }
 
 /* ---------- Lineup ---------- */
@@ -128,7 +162,7 @@ html, body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
-  max-height: 760px;
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -238,7 +272,9 @@ html, body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  min-height: 640px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .suspect-header {
@@ -282,8 +318,7 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 16px 0;
-  min-height: 280px;
-  max-height: 600px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -566,7 +601,7 @@ html, body {
   border: 1px solid var(--paper-edge);
   border-radius: 14px;
   padding: 18px 20px;
-  max-height: 760px;
+  height: 100%;
   overflow-y: auto;
   color: var(--ink);
   font-family: 'Special Elite', 'Courier New', ui-monospace, monospace;
@@ -741,9 +776,14 @@ html, body {
 /* ---------- Commentary feed ---------- */
 
 .commentary-feed {
-  margin-top: 16px;
-  padding-top: 14px;
+  margin-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 220px;
 }
 
 .commentary-header {
@@ -780,7 +820,8 @@ html, body {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 180px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;

@@ -161,7 +161,7 @@ function handleRecord(record, asst, toolCalls) {
       const delta = payload.delta ?? payload.content ?? "";
       if (!asst.bubble) asst.bubble = appendTurn("assistant", "");
       asst.text += delta;
-      asst.bubble.textContent = asst.text;
+      asst.bubble.innerHTML = lightMarkdown(escapeHtml(asst.text));
       scrollStream();
       break;
     }
@@ -278,7 +278,7 @@ function renderToolResult(entry) {
   try { parsed = JSON.parse(entry.result); } catch { /* keep as string */ }
 
   if (entry.name === "ask_suspect") {
-    el.innerHTML = `<div class="suspect-reply">— ${escapeHtml(entry.result)}</div>`;
+    el.innerHTML = `<div class="suspect-reply">— ${lightMarkdown(escapeHtml(entry.result))}</div>`;
     return;
   }
 
@@ -314,7 +314,7 @@ function renderToolResult(entry) {
       : "loss";
     el.innerHTML = `
       <div class="accuse-outcome ${outcomeClass}">${escapeHtml((parsed.outcome || "").replace(/_/g, " "))}</div>
-      ${parsed.detail ? `<div class="accuse-detail">${escapeHtml(parsed.detail)}</div>` : ""}`;
+      ${parsed.detail ? `<div class="accuse-detail">${lightMarkdown(escapeHtml(parsed.detail))}</div>` : ""}`;
     return;
   }
 
@@ -368,6 +368,15 @@ function escapeHtml(s) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+// Belt-and-braces: convert **bold** and *italic* in already-escaped text.
+// `*` markers at line starts (with space after) become bullets.
+function lightMarkdown(escaped) {
+  return escaped
+    .replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|\s)\*([^*\n]+?)\*(?=\s|$|[.,;:!?])/g, "$1<em>$2</em>")
+    .replace(/(^|\n)\* /g, "$1• ");
 }
 
 function titleCase(s) {
@@ -517,6 +526,23 @@ function startCommentaryStream() {
     li.className = "commentary-item";
     li.textContent = line.text;
     commentaryListEl.prepend(li);
+  });
+}
+
+const newGameBtn = document.getElementById("new-game");
+if (newGameBtn) {
+  newGameBtn.addEventListener("click", async () => {
+    if (!confirm("Start a new game? Current facts and turns will be cleared.")) return;
+    newGameBtn.disabled = true;
+    try {
+      const r = await fetch("/reset", { method: "POST" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+      newGameBtn.disabled = false;
+      alert(`Reset failed: ${e.message}`);
+    }
   });
 }
 
