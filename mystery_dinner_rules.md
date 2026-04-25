@@ -271,7 +271,7 @@ This avoids the classic agent failure mode where the LLM hallucinates a fact it 
 
 ```python
 from autogen.beta import Actor
-from autogen.beta.config import VertexAIConfig
+from autogen.beta.config import GeminiConfig
 from autogen.beta.tools import tool
 from autogen.beta.annotations import Context
 
@@ -311,7 +311,7 @@ def accuse(suspect: str, reasoning: str, context: Context) -> dict:
     ...
 
 detective = Actor(
-    config=VertexAIConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
+    config=GeminiConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
     name="detective",
     tools=[ask_suspect, list_verified_facts, build_timeline,
            find_contradictions, check_alibi, locate_at_time,

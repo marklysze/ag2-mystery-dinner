@@ -1,7 +1,7 @@
 import textwrap
 
 from autogen.beta import Actor
-from autogen.beta.config import VertexAIConfig
+from autogen.beta.config import GeminiConfig
 from autogen.beta.tools import tool
 
 from ..cases.blackwood_estate import SuspectProfile
@@ -84,7 +84,7 @@ def build_suspect(profile: SuspectProfile) -> Actor:
 
     return Actor(
         name=profile.name,
-        config=VertexAIConfig(
+        config=GeminiConfig(
             model="gemini-3-flash-preview",
             streaming=True,
         ),

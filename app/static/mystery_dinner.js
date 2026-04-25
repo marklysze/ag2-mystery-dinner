@@ -181,12 +181,15 @@ function handleRecord(record, asst, toolCalls) {
 
   switch (type) {
     case "TEXT_MESSAGE_START":
-      asst.bubble = appendTurn("assistant", "");
+      asst.bubble = null;
       asst.text = "";
       break;
     case "TEXT_MESSAGE_CONTENT":
     case "TEXT_MESSAGE_CHUNK": {
       const delta = payload.delta ?? payload.content ?? "";
+      // If we have no bubble yet AND the incoming delta is pure whitespace,
+      // skip — don't create an empty/whitespace-only bubble between tool cards.
+      if (!asst.bubble && !delta.trim()) break;
       if (!asst.bubble) asst.bubble = appendTurn("assistant", "");
       asst.text += delta;
       asst.bubble.innerHTML = lightMarkdown(escapeHtml(asst.text));

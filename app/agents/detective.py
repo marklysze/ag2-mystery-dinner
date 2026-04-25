@@ -2,7 +2,7 @@ import textwrap
 from typing import Any
 
 from autogen.beta import Actor
-from autogen.beta.config import VertexAIConfig
+from autogen.beta.config import OpenAIConfig
 from autogen.beta.events.tool_events import ToolCallEvent, ToolResultEvent
 from autogen.beta.tools import tool
 
@@ -200,8 +200,11 @@ def build_detective(suspects: dict[str, Actor]) -> Actor:
 
     return Actor(
         name="detective",
-        config=VertexAIConfig(
-            model="gemini-3-flash-preview",
+        config=OpenAIConfig(
+            # model="Qwen3.6-27B-6bit",
+            model="gemma-4-31b-it-8bit",
+            base_url="http://192.168.0.184:8000/v1",
+            api_key="nintendo",
             streaming=True,
         ),
         prompt=_render_prompt(),

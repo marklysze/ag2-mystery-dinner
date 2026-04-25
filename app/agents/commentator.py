@@ -1,7 +1,7 @@
 import textwrap
 
 from autogen.beta import Actor
-from autogen.beta.config import VertexAIConfig
+from autogen.beta.config import GeminiConfig
 from autogen.beta.tools import tool
 
 from ..memory import CASE_MEMORY
@@ -52,7 +52,7 @@ def peek_recent_turns(n: int = 2) -> list[dict]:
 def build_commentator() -> Actor:
     return Actor(
         name="commentator",
-        config=VertexAIConfig(
+        config=GeminiConfig(
             model="gemini-3-flash-preview",
             streaming=True,
         ),

@@ -58,11 +58,11 @@ The investigator. Full tool suite; orchestrates the game.
 
 ```python
 from autogen.beta import Actor, KnowledgeConfig, TaskConfig, MemoryKnowledgeStore
-from autogen.beta.config import VertexAIConfig
+from autogen.beta.config import GeminiConfig
 
 detective = Actor(
     name="detective",
-    config=VertexAIConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
+    config=GeminiConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
     prompt=DETECTIVE_PROMPT,
 
     # Gathering, analysis, and judgment tools (see §4)
@@ -81,7 +81,7 @@ detective = Actor(
 
     # Suspects are reachable as subagents for delegation
     tasks=TaskConfig(
-        config=VertexAIConfig(model="gemini-3.1-flash-lite-preview"),
+        config=GeminiConfig(model="gemini-3.1-flash-lite-preview"),
         max_depth=2,
     ),
 
@@ -116,7 +116,7 @@ from autogen.beta.tools.builtin.code_execution import CodeExecutionTool
 def build_suspect(profile: SuspectProfile) -> Actor:
     return Actor(
         name=profile.name,
-        config=VertexAIConfig(model="gemini-3.1-flash-lite-preview"),
+        config=GeminiConfig(model="gemini-3.1-flash-lite-preview"),
         prompt=render_suspect_prompt(profile),   # alibi + truth + compliance rule
         tools=[CodeExecutionTool()],
         knowledge=KnowledgeConfig(
@@ -137,7 +137,7 @@ Delivers live color commentary on the investigation — like a sports announcer.
 ```python
 commentator = Actor(
     name="commentator",
-    config=VertexAIConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
+    config=GeminiConfig(model="gemini-3.1-flash-lite-preview", streaming=True),
     prompt=COMMENTATOR_PROMPT,
     tools=[
         list_verified_facts,       # read-only view of the case
@@ -581,7 +581,7 @@ A one-shot `Actor` used only at `/game/new`:
 ```python
 setup = Actor(
     name="setup",
-    config=VertexAIConfig(model="gemini-3.1-flash-lite-preview"),
+    config=GeminiConfig(model="gemini-3.1-flash-lite-preview"),
     prompt=SETUP_PROMPT,
     response_schema=CaseDefinition,   # pydantic schema: victim, suspects, killer, dossiers
 )
