@@ -1,9 +1,9 @@
 import textwrap
 
 from autogen.beta import Actor
-from autogen.beta.config import GeminiConfig
 from autogen.beta.tools import tool
 
+from ..config import commentator_llm_config
 from ..memory import CASE_MEMORY
 
 COMMENTATOR_PROMPT = textwrap.dedent(
@@ -52,10 +52,7 @@ def peek_recent_turns(n: int = 2) -> list[dict]:
 def build_commentator() -> Actor:
     return Actor(
         name="commentator",
-        config=GeminiConfig(
-            model="gemini-3-flash-preview",
-            streaming=True,
-        ),
+        config=commentator_llm_config(),
         prompt=COMMENTATOR_PROMPT,
         tools=[peek_recent_facts, peek_recent_turns],
     )

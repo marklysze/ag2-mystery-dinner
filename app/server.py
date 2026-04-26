@@ -1,3 +1,6 @@
+# ruff: noqa: E402
+# load_dotenv() must run before the autogen imports so provider-specific
+# clients (Gemini, OpenAI) see GEMINI_API_KEY / etc. at construction time.
 import asyncio
 import json
 from pathlib import Path
@@ -28,6 +31,7 @@ from .cases.blackwood_estate import (
 )
 from .clock import GAME_CLOCK
 from .commentary import CommentaryEngine, set_engine
+from .config import GAME_DURATION_SECONDS
 from .game_master import GAME_MASTER
 from .memory import CASE_MEMORY, _to_plain
 
@@ -46,7 +50,7 @@ def create_app() -> Starlette:
     set_engine(engine)
 
     # Reset game clock on app boot
-    GAME_CLOCK.reset(10 * 60)
+    GAME_CLOCK.reset(GAME_DURATION_SECONDS)
 
     routes: list = []
     for name, actor in suspects.items():
@@ -61,8 +65,12 @@ def create_app() -> Starlette:
     routes.append(Route("/notebook/snapshot", notebook_snapshot))
     routes.append(Route("/commentary/stream", commentary_stream))
     routes.append(Route("/clock/stream", clock_stream))
-    routes.append(Mount("/images", app=StaticFiles(directory=IMAGES_DIR), name="images"))
-    routes.append(Mount("/", app=StaticFiles(directory=STATIC_DIR, html=True), name="static"))
+    routes.append(
+        Mount("/images", app=StaticFiles(directory=IMAGES_DIR), name="images")
+    )
+    routes.append(
+        Mount("/", app=StaticFiles(directory=STATIC_DIR, html=True), name="static")
+    )
 
     @asynccontextmanager
     async def lifespan(app):
@@ -95,7 +103,7 @@ async def suspects_info(request: Request) -> JSONResponse:
 
 
 async def reset_game(request: Request) -> JSONResponse:
-    GAME_CLOCK.reset(10 * 60)
+    GAME_CLOCK.reset(GAME_DURATION_SECONDS)
     GAME_MASTER.reset()
     CASE_MEMORY.reset()
     return JSONResponse({"ok": True, "clock_remaining": GAME_CLOCK.remaining()})
@@ -148,8 +156,10 @@ async def commentary_stream(request: Request) -> StreamingResponse:
 
     engine = get_engine()
     if engine is None:
+
         async def empty():
             yield "event: error\ndata: no engine\n\n"
+
         return StreamingResponse(empty(), media_type="text/event-stream")
 
     q = engine.subscribe()
@@ -178,7 +188,11 @@ async def clock_stream(request: Request) -> StreamingResponse:
             if await request.is_disconnected():
                 break
             rem = GAME_CLOCK.remaining()
-            payload = {"remaining": rem, "duration": GAME_CLOCK.duration, "expired": GAME_CLOCK.expired}
+            payload = {
+                "remaining": rem,
+                "duration": GAME_CLOCK.duration,
+                "expired": GAME_CLOCK.expired,
+            }
             yield f"event: tick\ndata: {json.dumps(payload)}\n\n"
             if rem <= 0:
                 break

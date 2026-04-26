@@ -1,14 +1,22 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from .cases.blackwood_estate import KILLER, MURDER_LOCATION, MURDER_WINDOW, profile_by_name
+from .cases.blackwood_estate import (
+    KILLER,
+    MURDER_LOCATION,
+    MURDER_WINDOW,
+    profile_by_name,
+)
 from .clock import GAME_CLOCK
+from .config import WITHDRAWALS_ALLOWED
 from .memory import CASE_MEMORY, VerifiedFact
 
 
 @dataclass
 class AccusationResult:
-    outcome: Literal["win", "wrong_killer", "insufficient_evidence", "no_withdrawal_left"]
+    outcome: Literal[
+        "win", "wrong_killer", "insufficient_evidence", "no_withdrawal_left"
+    ]
     killer_true: str
     killer_accused: str
     reasoning: str
@@ -23,7 +31,7 @@ class GameMaster:
         self.killer: str = KILLER
         self.murder_window: tuple[str, str] = MURDER_WINDOW
         self.murder_location: str = MURDER_LOCATION
-        self._withdrawals_left: int = 1
+        self._withdrawals_left: int = WITHDRAWALS_ALLOWED
         self._terminated: bool = False
         self._winning_outcome: bool | None = None
 
@@ -32,7 +40,7 @@ class GameMaster:
         return self._terminated
 
     def reset(self) -> None:
-        self._withdrawals_left = 1
+        self._withdrawals_left = WITHDRAWALS_ALLOWED
         self._terminated = False
         self._winning_outcome = None
 
@@ -231,14 +239,15 @@ def _sufficient(
         if p.name == accused:
             continue
         accounted = any(
-            f.suspect == p.name and _touches_window(f.result, window)
-            for f in facts
+            f.suspect == p.name and _touches_window(f.result, window) for f in facts
         )
         if not accounted:
             missing.append(p.display_name)
 
     if missing:
-        return False, "Not yet accounted for during the murder window: " + ", ".join(missing) + "."
+        return False, "Not yet accounted for during the murder window: " + ", ".join(
+            missing
+        ) + "."
     return True, "All other suspects are accounted for during the murder window."
 
 

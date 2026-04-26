@@ -2,11 +2,15 @@ import textwrap
 from typing import Any
 
 from autogen.beta import Actor
-from autogen.beta.config import OpenAIConfig
 from autogen.beta.events.tool_events import ToolCallEvent, ToolResultEvent
 from autogen.beta.tools import tool
 
-from ..cases.blackwood_estate import MURDER_LOCATION, MURDER_WINDOW, format_suspect_summary
+from ..cases.blackwood_estate import (
+    MURDER_LOCATION,
+    MURDER_WINDOW,
+    format_suspect_summary,
+)
+from ..config import detective_llm_config
 from ..game_master import GAME_MASTER
 from ..memory import CASE_MEMORY, InterrogationTurn, VerifiedFact, now, parse_json_args
 
@@ -124,7 +128,11 @@ def build_detective(suspects: dict[str, Actor]) -> Actor:
             if isinstance(ev, ToolCallEvent):
                 calls[ev.id] = ev
             elif isinstance(ev, ToolResultEvent):
-                call = calls.get(getattr(ev, "tool_call_id", "")) if hasattr(ev, "tool_call_id") else None
+                call = (
+                    calls.get(getattr(ev, "tool_call_id", ""))
+                    if hasattr(ev, "tool_call_id")
+                    else None
+                )
                 if call is None:
                     call = next(iter(calls.values()), None)
                 if call is None:
@@ -135,14 +143,20 @@ def build_detective(suspects: dict[str, Actor]) -> Actor:
                     parts = getattr(result_val, "parts", None)
                     if parts:
                         first = parts[0]
-                        text = getattr(first, "text", None) or getattr(first, "data", None)
+                        text = getattr(first, "text", None) or getattr(
+                            first, "data", None
+                        )
                         if text is not None:
                             result_val = text
                 except Exception:
                     pass
 
                 tool_calls_dump.append(
-                    {"name": call.name, "arguments": args, "result": _stringify(result_val)}
+                    {
+                        "name": call.name,
+                        "arguments": args,
+                        "result": _stringify(result_val),
+                    }
                 )
                 data_source = args.get("source", call.name)
                 new_facts.append(
@@ -203,18 +217,13 @@ def build_detective(suspects: dict[str, Actor]) -> Actor:
             "sufficient": result.sufficient,
             "detail": result.detail,
             "elapsed_seconds": result.elapsed_seconds,
-            "game_over": result.outcome in ("win", "wrong_killer", "no_withdrawal_left"),
+            "game_over": result.outcome
+            in ("win", "wrong_killer", "no_withdrawal_left"),
         }
 
     return Actor(
         name="detective",
-        config=OpenAIConfig(
-            # model="Qwen3.6-27B-6bit",
-            model="gemma-4-31b-it-8bit",
-            base_url="http://192.168.0.184:8000/v1",
-            api_key="nintendo",
-            streaming=True,
-        ),
+        config=detective_llm_config(),
         prompt=_render_prompt(),
         tools=[list_suspects, ask_suspect, list_verified_facts, accuse],
     )

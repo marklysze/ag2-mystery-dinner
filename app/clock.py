@@ -1,8 +1,10 @@
 import time
 
+from .config import GAME_DURATION_SECONDS
+
 
 class GameClock:
-    def __init__(self, duration_seconds: int = 10 * 60) -> None:
+    def __init__(self, duration_seconds: int = GAME_DURATION_SECONDS) -> None:
         self.duration = duration_seconds
         self.start_ts = time.time()
         self._expired = False

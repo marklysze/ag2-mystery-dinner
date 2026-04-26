@@ -20,13 +20,13 @@ from typing import Any
 
 @dataclass
 class SuspectProfile:
-    name: str          # Lowercase key used in routing and context keys
+    name: str  # Lowercase key used in routing and context keys
     display_name: str
     occupation: str
     emoji: str
     public_alibi: str
     private_truth: str
-    image: str = ""    # filename under /images (set by case module)
+    image: str = ""  # filename under /images (set by case module)
     dossier: dict[str, list[tuple]] = field(default_factory=dict)
 
 
@@ -52,27 +52,27 @@ ELEANOR = SuspectProfile(
     ),
     dossier={
         "smart_home": [
-            ("19:30", "front_door",   "locked"),
-            ("19:32", "living_room",  "lights_on"),
-            ("21:35", "front_door",   "unlocked"),
-            ("21:36", "front_door",   "locked"),
-            ("22:21", "front_door",   "unlocked"),
-            ("22:22", "front_door",   "locked"),
-            ("23:10", "bedroom",      "lights_off"),
+            ("19:30", "front_door", "locked"),
+            ("19:32", "living_room", "lights_on"),
+            ("21:35", "front_door", "unlocked"),
+            ("21:36", "front_door", "locked"),
+            ("22:21", "front_door", "unlocked"),
+            ("22:22", "front_door", "locked"),
+            ("23:10", "bedroom", "lights_off"),
         ],
         # NOTE: 40.7580,-73.9855 is VICTIM'S MANHATTAN APARTMENT (not estate).
         # The estate is 40.81xx,-73.95xx. Detective must spot this.
         "gps": [
             ("19:32", 40.7128, -74.0060),
             ("20:15", 40.7128, -74.0060),
-            ("21:40", 40.7580, -73.9855),   # victim's apartment — not estate
+            ("21:40", 40.7580, -73.9855),  # victim's apartment — not estate
             ("21:55", 40.7580, -73.9855),
             ("22:22", 40.7128, -74.0060),
         ],
         "phone_log": [
-            ("18:45", "outgoing", "bookstore",        180),
-            ("20:02", "incoming", "mother",           420),
-            ("22:30", "outgoing", "unknown_number",    45),
+            ("18:45", "outgoing", "bookstore", 180),
+            ("20:02", "incoming", "mother", 420),
+            ("22:30", "outgoing", "unknown_number", 45),
         ],
     },
 )
@@ -92,18 +92,18 @@ MARCO = SuspectProfile(
     dossier={
         # CCTV camera IDs: 'kitchen', 'pantry', 'hall_east', 'study_door'
         "cctv": [
-            ("20:00", "kitchen",    "marco_visible"),
-            ("20:30", "kitchen",    "marco_visible"),
-            ("21:00", "kitchen",    "marco_visible"),
-            ("21:15", "kitchen",    "marco_visible"),
-            ("21:38", "pantry",     "marco_enters"),
-            ("21:44", "pantry",     "marco_exits"),
-            ("21:45", "kitchen",    "marco_visible"),
-            ("22:00", "kitchen",    "marco_visible"),
-            ("22:30", "kitchen",    "marco_visible"),
+            ("20:00", "kitchen", "marco_visible"),
+            ("20:30", "kitchen", "marco_visible"),
+            ("21:00", "kitchen", "marco_visible"),
+            ("21:15", "kitchen", "marco_visible"),
+            ("21:38", "pantry", "marco_enters"),
+            ("21:44", "pantry", "marco_exits"),
+            ("21:45", "kitchen", "marco_visible"),
+            ("22:00", "kitchen", "marco_visible"),
+            ("22:30", "kitchen", "marco_visible"),
         ],
         "gps": [
-            ("19:00", 40.8101, -73.9501),   # kitchen
+            ("19:00", 40.8101, -73.9501),  # kitchen
             ("20:30", 40.8101, -73.9501),
             ("21:40", 40.8101, -73.9501),
             ("22:00", 40.8101, -73.9501),
@@ -131,26 +131,26 @@ JULIAN = SuspectProfile(  # <-- KILLER
         # No call to a lawyer exists. Julian will either invent one (lie
         # without forced truth) or be caught by phone_log showing nothing.
         "phone_log": [
-            ("17:30", "outgoing", "art_dealer",       600),
-            ("19:15", "incoming", "mother",           180),
-            ("22:18", "outgoing", "police_dispatch",  120),
+            ("17:30", "outgoing", "art_dealer", 600),
+            ("19:15", "incoming", "mother", 180),
+            ("22:18", "outgoing", "police_dispatch", 120),
         ],
         # Patio = 40.8108,-73.9504 (fictionally).
         # Study  = 40.8100,-73.9500.
         # Julian's GPS shows he was NEAR THE STUDY during murder window.
         "gps": [
-            ("20:30", 40.8108, -73.9504),   # patio (genuine, earlier)
-            ("21:15", 40.8108, -73.9504),   # patio
-            ("21:40", 40.8100, -73.9500),   # STUDY — entering
-            ("21:45", 40.8100, -73.9500),   # STUDY — during murder
-            ("21:50", 40.8100, -73.9500),   # STUDY — leaving
-            ("22:00", 40.8108, -73.9504),   # back on patio before alarm
+            ("20:30", 40.8108, -73.9504),  # patio (genuine, earlier)
+            ("21:15", 40.8108, -73.9504),  # patio
+            ("21:40", 40.8100, -73.9500),  # STUDY — entering
+            ("21:45", 40.8100, -73.9500),  # STUDY — during murder
+            ("21:50", 40.8100, -73.9500),  # STUDY — leaving
+            ("22:00", 40.8108, -73.9504),  # back on patio before alarm
         ],
         "keycard": [
-            ("18:00", "main_entrance",  "entered"),
-            ("21:42", "study_door",     "entered"),   # damning
-            ("21:50", "study_door",     "exited"),    # damning
-            ("22:17", "main_entrance",  "exited_rejoined_group"),
+            ("18:00", "main_entrance", "entered"),
+            ("21:42", "study_door", "entered"),  # damning
+            ("21:50", "study_door", "exited"),  # damning
+            ("22:17", "main_entrance", "exited_rejoined_group"),
         ],
     },
 )
@@ -169,7 +169,7 @@ DR_CHEN = SuspectProfile(
     ),
     dossier={
         "gps": [
-            ("20:15", 40.8103, -73.9502),   # library
+            ("20:15", 40.8103, -73.9502),  # library
             ("21:00", 40.8103, -73.9502),
             ("21:45", 40.8103, -73.9502),
             ("22:10", 40.8103, -73.9502),
@@ -181,8 +181,8 @@ DR_CHEN = SuspectProfile(
         "smart_watch": [
             ("20:00", 62, 0),
             ("21:00", 58, 0),
-            ("21:45", 60, 0),          # resting heart rate during murder
-            ("22:15", 68, 42),         # mild activity after leaving library
+            ("21:45", 60, 0),  # resting heart rate during murder
+            ("22:15", 68, 42),  # mild activity after leaving library
         ],
     },
 )
@@ -201,16 +201,16 @@ RHEA = SuspectProfile(
     ),
     dossier={
         "gps": [
-            ("20:00", 40.8106, -73.9507),   # greenhouse
+            ("20:00", 40.8106, -73.9507),  # greenhouse
             ("21:00", 40.8106, -73.9507),
-            ("21:25", 40.8109, -73.9510),   # EAST GARDENS (not greenhouse)
+            ("21:25", 40.8109, -73.9510),  # EAST GARDENS (not greenhouse)
             ("21:45", 40.8109, -73.9510),
             ("22:10", 40.8109, -73.9510),
-            ("22:30", 40.8106, -73.9507),   # back at greenhouse
+            ("22:30", 40.8106, -73.9507),  # back at greenhouse
         ],
         "phone_log": [
-            ("19:45", "outgoing", "villager_E",   40),
-            ("22:00", "incoming", "villager_E",   25),
+            ("19:45", "outgoing", "villager_E", 40),
+            ("22:00", "incoming", "villager_E", 25),
         ],
     },
 )
@@ -229,15 +229,15 @@ TOMAS = SuspectProfile(
     ),
     dossier={
         "gps": [
-            ("20:15", 40.7550, -73.9800),   # town
+            ("20:15", 40.7550, -73.9800),  # town
             ("21:10", 40.7550, -73.9800),
-            ("21:45", 40.7200, -74.0000),   # girlfriend's (NOT town, NOT estate)
+            ("21:45", 40.7200, -74.0000),  # girlfriend's (NOT town, NOT estate)
             ("22:30", 40.7200, -74.0000),
             ("23:15", 40.7550, -73.9800),
         ],
         "phone_log": [
-            ("21:30", "outgoing", "girlfriend",    60),
-            ("22:50", "outgoing", "dispatch",     120),   # fake timesheet call
+            ("21:30", "outgoing", "girlfriend", 60),
+            ("22:50", "outgoing", "dispatch", 120),  # fake timesheet call
         ],
     },
 )

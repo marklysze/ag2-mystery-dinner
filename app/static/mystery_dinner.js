@@ -611,6 +611,64 @@ if (newGameBtn) {
   });
 }
 
+// ---------- Behind-the-scenes tour ----------
+
+const tourEnterBtn = document.getElementById("tour-enter");
+const tourHomeBtn = document.getElementById("tour-home");
+const tourPrevBtn = document.getElementById("tour-prev");
+const tourNextBtn = document.getElementById("tour-next");
+const tourProgressEl = document.getElementById("tour-progress");
+const tourPageEls = document.querySelectorAll(".tour-page");
+const TOUR_TOTAL = tourPageEls.length;
+let tourIndex = 0;
+
+function showTourPage(i) {
+  tourIndex = Math.max(0, Math.min(TOUR_TOTAL - 1, i));
+  tourPageEls.forEach((el, idx) => {
+    el.classList.toggle("active", idx === tourIndex);
+    if (idx === tourIndex) el.scrollTop = 0;
+  });
+  if (tourProgressEl) tourProgressEl.textContent = `${tourIndex + 1} / ${TOUR_TOTAL}`;
+  if (tourPrevBtn) tourPrevBtn.disabled = tourIndex === 0;
+  if (tourNextBtn) {
+    const last = tourIndex === TOUR_TOTAL - 1;
+    tourNextBtn.textContent = last ? "Back to Home ↩" : "Next ›";
+    tourNextBtn.classList.toggle("primary", true);
+  }
+}
+
+if (tourEnterBtn) {
+  tourEnterBtn.addEventListener("click", () => {
+    showTourPage(0);
+    showView("tour");
+  });
+}
+if (tourHomeBtn) {
+  tourHomeBtn.addEventListener("click", () => showView("splash"));
+}
+if (tourPrevBtn) {
+  tourPrevBtn.addEventListener("click", () => showTourPage(tourIndex - 1));
+}
+if (tourNextBtn) {
+  tourNextBtn.addEventListener("click", () => {
+    if (tourIndex === TOUR_TOTAL - 1) {
+      showView("splash");
+      showTourPage(0);
+    } else {
+      showTourPage(tourIndex + 1);
+    }
+  });
+}
+
+document.addEventListener("keydown", (e) => {
+  if (document.body.dataset.view !== "tour") return;
+  if (e.key === "ArrowRight") tourNextBtn?.click();
+  else if (e.key === "ArrowLeft") tourPrevBtn?.click();
+  else if (e.key === "Escape") tourHomeBtn?.click();
+});
+
+showTourPage(0);
+
 loadCase();
 loadSuspects().then(() => {
   startNotebookStream();

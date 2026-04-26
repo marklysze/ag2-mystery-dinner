@@ -1,10 +1,10 @@
 import textwrap
 
 from autogen.beta import Actor
-from autogen.beta.config import GeminiConfig
 from autogen.beta.tools import tool
 
 from ..cases.blackwood_estate import SuspectProfile
+from ..config import suspect_llm_config
 
 
 def _render_prompt(profile: SuspectProfile) -> str:
@@ -68,26 +68,28 @@ def build_suspect(profile: SuspectProfile) -> Actor:
     dossier = profile.dossier
 
     # Capture dossier in a per-suspect closure so each Actor gets its own tool
-    @tool(name="query_dossier", description=(
-        f"Query {profile.display_name}'s private records within a time "
-        f"window. Sources: {', '.join(dossier.keys()) or '(none)'}. "
-        "Call this ONLY when the detective asks a question that names "
-        "one of your data sources and demands a specific value."
-    ))
+    @tool(
+        name="query_dossier",
+        description=(
+            f"Query {profile.display_name}'s private records within a time "
+            f"window. Sources: {', '.join(dossier.keys()) or '(none)'}. "
+            "Call this ONLY when the detective asks a question that names "
+            "one of your data sources and demands a specific value."
+        ),
+    )
     def query_dossier(
         source: str,
         start_time: str = "00:00",
         end_time: str = "23:59",
     ) -> list:
         rows = dossier.get(source, [])
-        return [row for row in rows if str(row[0]) >= start_time and str(row[0]) <= end_time]
+        return [
+            row for row in rows if str(row[0]) >= start_time and str(row[0]) <= end_time
+        ]
 
     return Actor(
         name=profile.name,
-        config=GeminiConfig(
-            model="gemini-3-flash-preview",
-            streaming=True,
-        ),
+        config=suspect_llm_config(),
         prompt=_render_prompt(profile),
         tools=[query_dossier],
     )

@@ -5,6 +5,7 @@ one-liner each time something dramatic happens. The generated lines are
 published on an in-process queue that the frontend subscribes to via
 /commentary/stream.
 """
+
 import asyncio
 import time
 from dataclasses import dataclass
