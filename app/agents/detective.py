@@ -76,8 +76,16 @@ def _render_prompt() -> str:
         immediately choose your next tool call — list_suspects,
         ask_suspect, list_verified_facts, or accuse — and emit it. If
         you feel like you have enough information to accuse, accuse.
-        If not, ask another suspect or pull another data source. The
-        ONLY way this run ends is via accuse.
+        If not, ask another suspect or pull another data source.
+
+        == STOP AFTER ACCUSE ==
+        accuse(...) is TERMINAL. Once it returns ANY result (win,
+        wrong_killer, insufficient_evidence, or no_withdrawal_left),
+        the run is OVER. Do NOT call accuse again. Do NOT call any
+        other tool. Emit ONE closing reply of 1-3 sentences in plain
+        prose summarising the outcome, then stop. Calling accuse a
+        second time will be rejected as "Game already concluded" — do
+        not do that.
 
         Be decisive. Prefer running tools over thinking aloud. Do ONE
         tool call, wait for the result, then decide the next call.

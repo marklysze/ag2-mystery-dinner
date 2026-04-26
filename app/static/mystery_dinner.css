@@ -319,6 +319,13 @@ body[data-view="splash"] .game-view { display: none; }
   color: var(--gold);
 }
 
+.avatar-img {
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid var(--border);
+  background: #2a1e32;
+}
+
 .meta .name {
   font-size: 16px;
   font-weight: 700;

@@ -145,7 +145,7 @@ async function runTurn() {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
-  const asst = { bubble: null, text: "", id: crypto.randomUUID() };
+  const asst = { bubble: null, text: "", id: crypto.randomUUID(), gameOver: false };
   const toolCalls = new Map();
 
   while (true) {
@@ -178,6 +178,12 @@ function handleRecord(record, asst, toolCalls) {
   let payload;
   try { payload = JSON.parse(dataStr); } catch { return; }
   const type = payload.type || eventType;
+
+  // Once a terminal verdict has rendered, suppress every subsequent
+  // event in this run. The server will reject any further accuse call
+  // anyway, but we don't want stray cards or text appearing after the
+  // verdict banner.
+  if (asst.gameOver) return;
 
   switch (type) {
     case "TEXT_MESSAGE_START":
@@ -223,7 +229,13 @@ function handleRecord(record, asst, toolCalls) {
       entry.result = String(r);
       renderToolResult(entry);
       scrollStream();
-      if (entry.name === "accuse") renderVerdict(r);
+      if (entry.name === "accuse") {
+        renderVerdict(r);
+        try {
+          const parsed = JSON.parse(r);
+          if (parsed && parsed.game_over) asst.gameOver = true;
+        } catch { /* ignore */ }
+      }
       break;
     }
     case "RUN_ERROR":
