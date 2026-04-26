@@ -26,6 +26,25 @@
 
 * { box-sizing: border-box; }
 
+/* Themed scrollbars — Firefox + modern Chromium/Safari (standard),
+   plus the WebKit fallback for older Chrome/Safari/Edge. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 210, 122, 0.35) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(243, 210, 122, 0.3);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(243, 210, 122, 0.55); }
+
+/* Notebook gets an ink-toned scrollbar so it doesn't clash with parchment. */
+.notebook { scrollbar-color: rgba(107, 58, 23, 0.35) transparent; }
+.notebook::-webkit-scrollbar-thumb { background: rgba(107, 58, 23, 0.3); }
+.notebook::-webkit-scrollbar-thumb:hover { background: rgba(107, 58, 23, 0.55); }
+
 html, body {
   margin: 0;
   background: linear-gradient(180deg, #1a1420 0%, #0d0a12 100%);
