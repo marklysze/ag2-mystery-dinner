@@ -1,4 +1,4 @@
-# ag2-mystery-dinner
+# AG2 Mystery Dinner demo
 
 A multi-agent murder-mystery dinner game built on [AG2](https://github.com/ag2ai/ag2)'s `autogen.beta` framework. A detective agent interrogates suspect agents while a commentator narrates, all streamed to an AG-UI front end.
 
